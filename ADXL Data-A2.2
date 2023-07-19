@@ -1,1 +1,99 @@
+#include <ADXL345/ADXL345.h>
+#include <json/json.h>
+#include <stdio.h>
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+#include "MQTTClient.h"
+
+//I have replaced the example I.P address, username and password settings with my own settings and enabled debug messaging
+
+#define ADDRESS     "tcp://192.168.0.227:1883"
+#define CLIENTID    "BBB"
+#define AUTHMETHOD  "BB512"
+#define AUTHTOKEN   "password"
+#define TOPIC       "EE513/ADXL345Gravity"
+#define DEBUG       // Enables debugging messages
+#define LWTTopic   “status”
+#define LWTPayload “offline”
+#define LWTQOS      1
+
+int main(int argc, char* argv[]) {
+const char * MQTT_client = "192.168.0.227";
+const int MQTT_port = 1883;
+const char * MQTT_user = "BB512";
+const char * MQTT_pwd = "password";
+ 
+// Topic
+const std::string tpcAcceleration = ADXL345 + "/acceleration";
+ 
+   }
+ 
+void MQTT_connect() {
+    #ifdef DEBUG
+    Serial.println(" Connecting to ADXL345 ");
+    #endif
+ 
+    MQTT.setClientId(_hostname.c_str());
+    MQTT.connect();
+}
+ 
+    _MQTT_connected = true; {
+    _irq_active = true;
+    sensor_enableIrq();
+}
+ 
+void onMQTTDisconnect(AsyncMQTTClientDisconnectReason reason) {
+    #ifdef DEBUG
+    Serial.println(" Disconnected from the ADXL345 ");
+    #endif
+ 
+    _MQTT_connected = false;
+    _irq_active = false;
+    sensor_disableIrq();
+ 
+}
+ 
+void sensor_init() {
+
+  int status = ADXL345.begin();
+  if (status < 0)
+  {
+    while(1)
+    {
+      yield();
+    }
+ 
+  #ifdef DEBUG
+  delay(500);
+  Serial.println(" Initialising the ADXL345 ");
+  #endif
+ 
+  delay(500);
+ 
+  _irq_active = true;
+}
+ 
+  {
+    return;
+  }
+  _new_data = true;
+
+void loop() {
+  
+  if(_new_data)
+  {
+
+    IMU.readSensor();
+    String ax = String(IMU.getAccelX_mss()),
+           ay = String(IMU.getAccelY_mss()),
+           az = String(IMU.getAccelZ_mss());
+ 
+    String json = String("{\"x\":" + ax + ", \"y\":" + ay + ",\"z\":" + az + "}");
+    MQTT.publish(tpcAccelData.c_str(), 0, true, json.c_str());
+ 
+    _new_data = false;
+  }
+  
+}
 
