@@ -1,0 +1,91 @@
+// This will make the LED on Pin 9 blink when value > 20
+
+#include <iostream/iostream.h>
+#include <string/string.h>
+#include <ADXL345/ADXL345.h>
+#include <json/json.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sstream>
+#include <fstream>
+#include <MQTTClient.h>
+
+//I have replaced the example I.P address, username and password settings with my own settings
+
+#define ADDRESS    "tcp://192.168.0.227:1883"
+#define CLIENTID   "BBB"
+#define AUTHMETHOD "BB512”
+#define AUTHTOKEN “password”
+#define TOPIC      "ee513/GUI_LED"
+#define QOS        1
+#define VALUE      20
+#define LED        48
+
+class MQTTClient : public mosqpp::mosquittopp
+{
+public:
+    MQTTClient(const QString &CLIENTID, const QString &topic)
+        : mosqpp::mosquittopp(), CLIENTID_(CLIENTID), topic_(topic)
+    {
+        int keepalive = 50;
+        connect_async(address.toStdString().c_str(), 1883, keepalive);
+        loop_start();
+    }
+
+    ~MQTTClient()
+    {
+        loop_stop();
+        disconnect();
+    }
+
+    void on_connect(int rc)
+    {
+        mosqpp::mosquittopp::on_connect(rc);
+        std::cout << "Connected to BBB" << std::endl;
+        subscribe(NULL, topic_.toStdString().c_str());
+    }
+
+    void on_message(const struct mosquitto_message *message)
+    {
+        if (QString(message->topic) != topic_) {
+            return;
+        }
+        
+        std::string payload((const char *)message->payload, message->payloadlen);
+        double value = std::stod(payload);
+        if (value > VALUE) {
+            Write(LED_Pin, High); 
+ int main()
+    for (i = 0; i < 8; i++) {
+                outb(inb(LED) ^ 0x80, LED);
+                usleep(1000000);                          //100ms delay
+                outb(inb(LED) ^ 0x80, LED);
+                usleep(1000000);                         //100ms delay
+            }
+        }
+        usleep(2000000);                                 //200ms delay
+    }
+    return 0;
+}
+        } else {
+            Write(LED_Pin, Low);
+        }
+    }
+
+private:
+    QString CLIENTID_;
+    QString topic_;
+};
+
+int main(int argc, char *argv[])
+{
+    wiringPiSetupGpio();
+    PinMode(LED_PIN, OUTPUT);
+    
+    MQTTClient("BBB", TOPIC_ ee513/GUI_LED);
+    
+    while (true) {
+    }
+    
+    return 0;
+}
