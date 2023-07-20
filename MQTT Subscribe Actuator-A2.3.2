@@ -1,0 +1,71 @@
+// To make an LED on Pin 9 blink on the hour every hour
+
+#include <iostream/iostream.h>
+#include <string/string.h>
+#include <ADXL345/ADXL345.h>
+#include <json/json.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sstream>
+#include <fstream>
+#include <MQTTClient.h>
+
+//I have replaced the example I.P address, username and password settings with my own settings
+
+#define ADDRESS    "tcp://192.168.0.227:1883"
+#define CLIENTID   "BBB"
+#define AUTHMETHOD "BB512”
+#define AUTHTOKEN “password”
+#define TOPIC      "ee513/GUI_TIME"
+#define QOS        1
+#define VALUE      00
+#define LED        48
+class MQTTClient : public mosqpp::mosquittopp
+{
+public:
+    MQTTClient(const QString &CLIENTID, const QString &topic)
+        : mosqpp::mosquittopp(), CLIENTID_(CLIENTID), TOPIC_(TOPIC)
+    {
+        int keepalive = 60;
+        connect_async(address.toStdString().c_str(), 1883, keepalive);
+        loop_start();
+    }
+
+    ~MQTTClient()
+    {
+        loop_stop();
+        disconnect();
+    }
+
+    void on_connect(int rc)
+    {
+        mosqpp::mosquittopp::on_connect(rc);
+        std::cout << " Connected to the BBB " << std::endl;
+        subscribe(NULL, topic_.toStdString().c_str());
+    }
+
+    void on_message(const struct mosquitto_message *message)
+    {
+        if (QString(message->topic) != topic_) {
+            return; int main()
+{
+    int i;
+    if ((LED, 1, 1)) {
+    
+        return 1;
+    }
+    outb(0x00, LED);
+    for (i = 0; i < 120; i++) {
+        outb(inb(LED) ^ 0x80, LED); 
+         usleep(500000);                            //50ms delay
+        outb(inb(LED) ^ 0x80, LED);
+        usleep(500000);                             //50ms delay
+    }
+    return 0;
+      }
+      
+    }
+    
+  }
+  
+}
