@@ -1,1 +1,85 @@
+#include <iostream/iostream.h>
+#include <string/string.h>
+#include <ADXL345/ADXL345.h>
+#include <json/json.h>
+#include <MQTTClient.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sstream>
+#include <fstream>
+#include <QTApplication>
+#include <QTWidget>
+#include <QTVBoxLayout>
+#include <QTLineEdit>
+#include <QTRadioButton>
+#include <QTLabel>
+#include <QTComboBox>
+#include <QTCustomPlot>
+#include <QTString>
+#include <QTThread>
+#include <QJSONDocument>
+#include <QJSONObject>
+#include <QJSONArray>
 
+//I have replaced the example I.P address, username and password settings with my own settings
+
+#define ADDRESS    "tcp://192.168.0.227:1883"
+#define CLIENTID   "BBB"
+#define AUTHMETHOD "BB512”
+#define AUTHTOKEN “password”
+#define TOPIC      "ee513/GUI"
+#define QOS        1
+
+{
+public:
+    MQTTClient(const QTString & CLIENTID, const QTString & topic)
+        : CLIENTID _(CLIENTID), topic_(topic)
+    {
+        int keepalive = 40;                                                     // Keeps channel open for 40 seconds
+        connect(CLIENTID.toStdString().c_str(), 1883, keepalive);
+        subscribe(NULL, topic.toStdString().c_str());
+        loop_start();
+    }
+
+    ~MQTTClient()
+    {
+        loop_stop();
+        disconnect();
+    }
+
+    void on_connect(int rc)
+    {
+        on_connect(rc);
+        std::cout << " Connected to BBB " << std::endl;
+    }
+
+    void on_message(const struct mosquitto_message *message)
+    {
+        if (QTString(message->topic) != topic_) {
+            return;
+        }
+        
+        std::string payload((const char *)message->payload, message->payloadlen);
+        QJSONDocument doc = QJSONDocument::fromJSON(payload.c_str());
+        if (doc.isNull()) {
+            return;
+        }
+        
+        QJSONObject obj = doc.object();
+        if (!obj.contains("time") || !obj.contains("data")) {
+            return;
+        }
+        
+        qint64 time = obj.value("time").toDouble() * 1000;
+        QJSONArray dataArray = obj.value("data").toArray();
+        if (dataArray.size() != 3) {
+            return;
+        }
+        
+        double x = dataArray.at(0).toDouble();
+        double y = dataArray.at(1).
+        
+   }
+   
+  }
+  
