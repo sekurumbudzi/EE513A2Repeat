@@ -1,0 +1,30 @@
+#include <json/json.h>
+#include <stdio.h>
+
+int main() {
+
+   // This creates the JSON objects
+
+   Json_object * jobj = Json_object_new_object();
+   Json_object * jdouble = Json_object_new_double();
+ 
+   int MainWindow::parseJSonData(QString str){
+
+   JsonDocument doc = JsonDocument::fromJson(str.toUtf8());
+   
+   JsonObject obj = doc.object();
+   JsonObject sample = obj["sample"].toObject();
+   JsonObject obj = doc.object();
+   JsonDoubleObject obj = doc.doubleobject();
+   JsonDoubleObject sample = obj["sample"].toDoubleObject();
+   JsonDoubleObject obj = doc.doubleobject();
+   
+   this->temperature = (float) sample["temperature"].toObject();
+   this->humidity = (float) sample["humidity"].toDoubleObject();
+   cout << " The current temperature is  " << temperature << ", and the current humidity is  "
+    	<< humidity << endl;
+   return 0;
+   
+        }
+
+   }
